@@ -69,7 +69,7 @@ def evaluate_policy(
             UserWarning,
         )
 
-    episode_rewards, episode_lengths = [], []
+    episode_rewards, episode_lengths, episode_infos = [], [], []
     not_reseted = True
     while len(episode_rewards) < n_eval_episodes:
         # Number of loops here might differ from true episodes
@@ -81,6 +81,7 @@ def evaluate_policy(
         done, state = False, None
         episode_reward = 0.0
         episode_length = 0
+        episode_info = None
         while not done:
             action, state = model.predict(obs, state=state, deterministic=deterministic)
             obs, reward, done, info = env.step(action)
@@ -88,6 +89,10 @@ def evaluate_policy(
             if callback is not None:
                 callback(locals(), globals())
             episode_length += 1
+            if episode_info is None:
+                episode_info = {k:0 for k in info[0].keys()}
+            for key in episode_info.keys():
+                episode_info[key]+=info[0][key]
             if render:
                 env.render()
 
@@ -101,14 +106,20 @@ def evaluate_policy(
                 # has been wrapped with it. Use those rewards instead.
                 episode_rewards.append(info["episode"]["r"])
                 episode_lengths.append(info["episode"]["l"])
+                episode_infos.append({k:np.mean(v) for k,v in episode_info.items()})
         else:
             episode_rewards.append(episode_reward)
             episode_lengths.append(episode_length)
+            episode_infos.append({k:np.mean(v) for k,v in episode_info.items()})
 
     mean_reward = np.mean(episode_rewards)
     std_reward = np.std(episode_rewards)
+    mean_infos = dict.fromkeys(episode_info.keys())
+    for key in mean_infos.keys():
+        mean_infos[key] = np.mean([ep[key] for ep in episode_infos])
+
     if reward_threshold is not None:
         assert mean_reward > reward_threshold, "Mean reward below threshold: " f"{mean_reward:.2f} < {reward_threshold:.2f}"
     if return_episode_rewards:
-        return episode_rewards, episode_lengths
-    return mean_reward, std_reward
+        return episode_rewards, episode_lengths, episode_infos
+    return mean_reward, std_reward, mean_infos
