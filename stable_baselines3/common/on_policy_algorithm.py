@@ -230,6 +230,9 @@ class OnPolicyAlgorithm(BaseAlgorithm):
                 break
 
             iteration += 1
+            for _env in self.env.get_attr('robot'):
+                _env.iteration_count = iteration
+
             self._update_current_progress_remaining(self.num_timesteps, total_timesteps)
 
             # Display training infos
