@@ -3,8 +3,52 @@
 Changelog
 ==========
 
+
+Release 1.1.0a5 (WIP)
+---------------------------
+
+Breaking Changes:
+^^^^^^^^^^^^^^^^^
+- Renamed ``_last_dones`` and ``dones`` to ``_last_episode_starts`` and ``episode_starts`` in ``RolloutBuffer``.
+
+New Features:
+^^^^^^^^^^^^^
+- Added `VecMonitor <https://github.com/DLR-RM/stable-baselines3/blob/master/stable_baselines3/common/vec_env/vec_monitor.py>`_ and
+  `VecExtractDictObs <https://github.com/DLR-RM/stable-baselines3/blob/master/stable_baselines3/common/vec_env/vec_extract_dict_obs.py>`_ wrappers
+  to handle gym3-style vectorized environments (@vwxyzjn)
+- Ignored the terminal observation if the it is not provided by the environment
+  such as the gym3-style vectorized environments. (@vwxyzjn)
+
+Bug Fixes:
+^^^^^^^^^^
+- Fixed potential issue when calling off-policy algorithms with default arguments multiple times (the size of the replay buffer would be the same)
+- Fixed loading of ``ent_coef`` for ``SAC`` and ``TQC``, it was not optimized anymore (thanks @Atlis)
+- Fixed saving of ``A2C`` and ``PPO`` policy when using gSDE (thanks @liusida)
+
+Deprecations:
+^^^^^^^^^^^^^
+
+Others:
+^^^^^^^
+- Added ``flake8-bugbear`` to tests dependencies to find likely bugs
+- Added Code of Conduct
+- Added tests for GAE and lambda return computation
+- Updated docker image with newest black version
+
+Documentation:
+^^^^^^^^^^^^^^
+- Added gym pybullet drones project (@JacopoPan)
+- Added link to SuperSuit in projects (@justinkterry)
+- Fixed DQN example (thanks @ltbd78)
+- Clarified channel-first/channel-last recommendation
+- Update sphinx environment installation instructions (@tom-doerr)
+- Clarified pip installation in Zsh (@tom-doerr)
+- Clarified return computation for on-policy algorithms (TD(lambda) estimate was used)
+- Added example for using ``ProcgenEnv``
+
+
 Release 1.0 (2021-03-15)
--------------------------------
+------------------------
 
 **First Major Version**
 
@@ -22,6 +66,7 @@ Breaking Changes:
 New Features:
 ^^^^^^^^^^^^^
 - Added support for ``custom_objects`` when loading models
+
 
 Bug Fixes:
 ^^^^^^^^^^
@@ -609,5 +654,5 @@ And all the contributors:
 @flodorner @KuKuXia @NeoExtended @PartiallyTyped @mmcenta @richardwu @kinalmehta @rolandgvc @tkelestemur @mloo3
 @tirafesi @blurLake @koulakis @joeljosephjin @shwang @rk37 @andyshih12 @RaphaelWag @xicocaio
 @diditforlulz273 @liorcohen5 @ManifoldFR @mloo3 @SwamyDev @wmmc88 @megan-klaiber @thisray
-@tfederico @hn2 @LucasAlegre @AptX395 @zampanteymedio @decodyng @ardabbour @lorenz-h @mschweizer @lorepieri8
-@ShangqunYu @PierreExeter
+@tfederico @hn2 @LucasAlegre @AptX395 @zampanteymedio @decodyng @ardabbour @lorenz-h @mschweizer @lorepieri8 @vwxyzjn
+@ShangqunYu @PierreExeter @JacopoPan @ltbd78 @tom-doerr @Atlis @liusida
