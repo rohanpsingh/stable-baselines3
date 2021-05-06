@@ -14,6 +14,7 @@ from stable_baselines3.common.distributions import (
     BernoulliDistribution,
     CategoricalDistribution,
     DiagGaussianDistribution,
+    SquashedDiagGaussianDistribution,
     Distribution,
     MultiCategoricalDistribution,
     StateDependentNoiseDistribution,
@@ -418,7 +419,8 @@ class ActorCriticPolicy(BasePolicy):
         self.dist_kwargs = dist_kwargs
 
         # Action distribution
-        self.action_dist = make_proba_distribution(action_space, use_sde=use_sde, dist_kwargs=dist_kwargs)
+        #self.action_dist = make_proba_distribution(action_space, use_sde=use_sde, dist_kwargs=dist_kwargs)
+        self.action_dist = SquashedDiagGaussianDistribution(get_action_dim(action_space))
 
         self._build(lr_schedule)
 
